@@ -32,10 +32,12 @@ use Pathogens::FindFilesAndEmailResults;
 my $DIRECTORY;
 my $OUTPUT_FILE;
 my $ENVIRONMENT;
+my $quiet;
 
 GetOptions ( 'environment|e=s'  => \$ENVIRONMENT,
              'directory|d=s'    => \$DIRECTORY,
-             'output_file|o=s'  => \$OUTPUT_FILE
+             'output_file|o=s'  => \$OUTPUT_FILE,
+	     'quiet|q'          => \$quiet
 );
 
 $ENVIRONMENT or die <<USAGE;
@@ -47,7 +49,7 @@ This will look for files which can usually be deleted
      --environment     Production or Test
      --directory       The root directory to use
      --output_file     The filename for the raw list of found files
-
+     --quiet           Do not send emails to users or admin
 USAGE
 ;
 
@@ -55,7 +57,16 @@ my %config_settings = %{Pathogens::ConfigSettings->new(environment => $ENVIRONME
 
 # values passed in so use these instead of the places to search values in the config files
 #TODO dry this out
-if(( defined $DIRECTORY) && ( defined $OUTPUT_FILE))
+if(( defined $DIRECTORY) && ( defined $OUTPUT_FILE) && (defined $quiet))
+{
+ Pathogens::FindFiles->new(
+    directory                            => $DIRECTORY,
+    output_file                          => $OUTPUT_FILE,
+    regex                                => $config_settings{default}{regex},
+    exclude                              => $config_settings{default}{exclude},
+     );
+}
+elsif(( defined $DIRECTORY) && ( defined $OUTPUT_FILE))
 {
   
   Pathogens::FindFilesAndEmailResults->new(
