@@ -1,3 +1,7 @@
 language: perl
 sudo: false
-script: "make test"
+perl:
+  - "5.14"
+script: 
+  - "cpanm --notest Test::Most Moose"
+  - "make test"
