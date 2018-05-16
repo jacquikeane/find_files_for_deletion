@@ -2,6 +2,7 @@ language: perl
 sudo: false
 perl:
   - "5.18"
+install:
+  - cpanm --notest Test::Most Moose
 script: 
-  - "cpanm --notest Test::Most Moose"
-  - "make test"
+  - make test
